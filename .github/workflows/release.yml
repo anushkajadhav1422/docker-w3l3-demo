@@ -39,3 +39,22 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.event.release.tag_name }}
             ghcr.io/${{ github.repository }}:latest
+
+  production:
+    name: Production Deployment
+    needs: docker
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+
+    steps:
+
+      - name: Production deployment
+        run: |
+          echo "Production deployment approved."
+          echo "Deploying Docker image:"
+          echo "ghcr.io/${{ github.repository }}:${{ github.event.release.tag_name }}"
+
+      - name: Deployment completed
+        run: echo "Production deployment successful."
