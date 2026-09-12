@@ -54,8 +54,10 @@ jobs:
           echo "Deploying Docker image:"
           echo "ghcr.io/${{ github.repository }}:${{ github.event.release.tag_name }}"
 
-      - name: Deployment completed
-        run: echo "Production deployment successful."
+- name: Deployment completed
+  run: |
+    echo "Testing Slack failure notification"
+    exit 1
 
   notify:
     name: Notify on Failure
