@@ -20,7 +20,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout release code
         uses: actions/checkout@v4
 
@@ -49,7 +48,6 @@ jobs:
       name: production
 
     steps:
-
       - name: Production deployment
         run: |
           echo "Production deployment approved."
@@ -58,3 +56,22 @@ jobs:
 
       - name: Deployment completed
         run: echo "Production deployment successful."
+
+  notify:
+    name: Notify on Failure
+    if: ${{ failure() }}
+    needs:
+      - test
+      - docker
+      - production
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Slack notification
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST \
+            -H 'Content-type: application/json' \
+            --data "{\"text\":\"❌ GitHub Actions pipeline failed for ${{ github.repository }}. Release: ${{ github.event.release.tag_name }}\"}" \
+            "$SLACK_WEBHOOK_URL"
